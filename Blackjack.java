@@ -413,7 +413,6 @@ public class Blackjack {
             }
 
             allScores.put(enteredUsername, chips);
-            System.out.println(allScores);
 
             FileWriter write = new FileWriter(scoresFile);
             for (Map.Entry key : allScores.entrySet()) {
