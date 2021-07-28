@@ -491,6 +491,20 @@ public class Blackjack {
 
         } // end: while (chips > 0)
 
+        if (chips == 0) {
+            System.out.println("You have no more chips.");
+            if (loadUsername) {
+                allScores.remove(username);
+                scoresFile.delete();
+                File scoresFile = new File("BlackjackScores.txt");
+                scoresFile.createNewFile();
+                FileWriter write = new FileWriter(scoresFile);
+                for (Map.Entry key : allScores.entrySet()) {
+                    write.write(key.getKey() + ":" + key.getValue() + "\n");
+                }
+                write.close();
+            }
+        }
         Blackjack.saveScore();
         System.out.println("Thank you for playing!");
     }
