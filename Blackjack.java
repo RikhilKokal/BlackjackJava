@@ -1,6 +1,9 @@
 // Blackjack.java
 // Text-Based Blackjack
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*; // Import all Java libraries
 
 
@@ -22,6 +25,54 @@ public class Blackjack {
     static int playerTotal = 0;
     static int dealerTotal = 0;
     static int playerTotalSplit = 0;
+    static HashMap<String, Integer> allScores = new HashMap<>();
+    static File scoresFile = new File("BlackjackScores.txt");
+    static boolean loadUsername = false;
+    static String username;
+
+    public static void loadSave() {
+        try {
+            if (scoresFile.exists()) {
+                Scanner fileReader = new Scanner(scoresFile);
+                while (fileReader.hasNextLine()) {
+                    String currentScore = fileReader.nextLine();
+                    String[] currentScoreSplit = currentScore.split(":");
+                    allScores.put(currentScoreSplit[0], Integer.parseInt(currentScoreSplit[1]));
+                }
+                if (allScores.size() != 0) {
+                    while (true) {
+                        System.out.println("Would you like to load a save file? (Y/N)");
+                        String load = input.next();
+                        if (load.equalsIgnoreCase("Y")) {
+                            loadUsername = true;
+                            break;
+                        } else if (load.equalsIgnoreCase("N")) {
+                            break;
+                        } else {
+                            System.err.println("Unknown command entered. Please try again.");
+                        }
+                    }
+                }
+            } else {
+                scoresFile.createNewFile();
+            }
+        } catch (IOException e) {
+            System.err.println("An error occurred. Please try again.");
+            e.printStackTrace();
+        }
+        if (loadUsername) {
+            while (true) {
+                System.out.println("What is your username?");
+                username = input.next();
+                if (allScores.containsKey(username)) {
+                    chips = allScores.get(username);
+                    break;
+                } else {
+                    System.err.println("That username has not been saved.");
+                }
+            }
+        }
+    }
 
     public static void howManyDecks() {
         while (true) {
@@ -323,9 +374,60 @@ public class Blackjack {
         }
     }
 
+    public static void saveScore() throws IOException {
+        String save = "";
+        String enteredUsername = "";
+        if (!loadUsername) {
+            while (true) {
+                System.out.println("Would you like to save your score? (Y/N)");
+                save = input.next();
+                if (save.equalsIgnoreCase("Y") || save.equalsIgnoreCase("N")) {
+                    break;
+                }
+                else {
+                    System.err.println("Unknown command entered. Please try again.");
+                }
+            }
+        }
+
+        if (save.equalsIgnoreCase("Y") || loadUsername) {
+            scoresFile.delete();
+            File scoresFile = new File("BlackjackScores.txt");
+            scoresFile.createNewFile();
+
+            if (save.equalsIgnoreCase("Y")) {
+                while (true) {
+                    System.out.println("What would you like your username to be? NOTE: You will need to rememmber this username in order to load this save file.");
+                    enteredUsername = input.next();
+
+                    if (enteredUsername.length() < 2) {
+                        System.err.println("Your username must be at least two characters long.");
+                    } else if (allScores.containsKey(enteredUsername)) {
+                        System.err.println("That username is already taken.");
+                    } else {
+                        break;
+                    }
+                }
+            } else {
+                enteredUsername = username;
+            }
+
+            allScores.put(enteredUsername, chips);
+            System.out.println(allScores);
+
+            FileWriter write = new FileWriter(scoresFile);
+            for (Map.Entry key : allScores.entrySet()) {
+                write.write(key.getKey() + ":" + key.getValue() + "\n");
+            }
+            write.close();
+        }
+    }
+
     // public static void main
     // Main method
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, IOException {
+        Blackjack.loadSave();
+
         Blackjack.howManyDecks();
         // While player still has chips
         while (chips > 0) {
@@ -390,6 +492,7 @@ public class Blackjack {
 
         } // end: while (chips > 0)
 
+        Blackjack.saveScore();
         System.out.println("Thank you for playing!");
     }
     // end: Main method
