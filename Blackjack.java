@@ -378,7 +378,7 @@ public class Blackjack {
 
     public static void saveScore() throws IOException {
         String save = "";
-        String enteredUsername = "";
+        String enteredUsername;
         if (!loadUsername) {
             while (true) {
                 System.out.println("Would you like to save your score? (Y/N)");
@@ -417,8 +417,8 @@ public class Blackjack {
             allScores.put(enteredUsername, chips);
 
             FileWriter write = new FileWriter(scoresFile);
-            for (Map.Entry key : allScores.entrySet()) {
-                String encodedData = Base64.getEncoder().encodeToString((key.getKey().toString() + ":" + key.getValue().toString()).getBytes());
+            for (Map.Entry<String, Integer> key : allScores.entrySet()) {
+                String encodedData = Base64.getEncoder().encodeToString((key.getKey() + ":" + key.getValue()).getBytes());
                 write.write(encodedData + "\n");
             }
             write.close();
@@ -502,8 +502,8 @@ public class Blackjack {
                 File scoresFile = new File("BlackjackScores.txt");
                 scoresFile.createNewFile();
                 FileWriter write = new FileWriter(scoresFile);
-                for (Map.Entry key : allScores.entrySet()) {
-                    String encodedData = Base64.getEncoder().encodeToString((key.getKey().toString() + ":" + key.getValue().toString()).getBytes());
+                for (Map.Entry<String, Integer> key : allScores.entrySet()) {
+                    String encodedData = Base64.getEncoder().encodeToString((key.getKey() + ":" + key.getValue()).getBytes());
                     write.write(encodedData + "\n");
                 }
                 write.close();
