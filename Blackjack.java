@@ -36,7 +36,9 @@ public class Blackjack {
                 Scanner fileReader = new Scanner(scoresFile);
                 while (fileReader.hasNextLine()) {
                     String currentScore = fileReader.nextLine();
-                    String[] currentScoreSplit = currentScore.split(":");
+                    byte[] decodedData = Base64.getDecoder().decode(currentScore);
+                    String[] currentScoreSplit = new String(decodedData).split(":");
+
                     allScores.put(currentScoreSplit[0], Integer.parseInt(currentScoreSplit[1]));
                 }
                 if (allScores.size() != 0) {
@@ -416,7 +418,8 @@ public class Blackjack {
 
             FileWriter write = new FileWriter(scoresFile);
             for (Map.Entry key : allScores.entrySet()) {
-                write.write(key.getKey() + ":" + key.getValue() + "\n");
+                String encodedData = Base64.getEncoder().encodeToString((key.getKey().toString() + ":" + key.getValue().toString()).getBytes());
+                write.write(encodedData + "\n");
             }
             write.close();
         }
@@ -500,7 +503,8 @@ public class Blackjack {
                 scoresFile.createNewFile();
                 FileWriter write = new FileWriter(scoresFile);
                 for (Map.Entry key : allScores.entrySet()) {
-                    write.write(key.getKey() + ":" + key.getValue() + "\n");
+                    String encodedData = Base64.getEncoder().encodeToString((key.getKey().toString() + ":" + key.getValue().toString()).getBytes());
+                    write.write(encodedData + "\n");
                 }
                 write.close();
             }
