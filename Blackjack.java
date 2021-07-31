@@ -184,6 +184,7 @@ public class Blackjack {
             }
             // If they entered a valid number of chips, break out of while (true) loop
             else {
+                System.out.println();
                 break;
             }
         }
@@ -288,13 +289,13 @@ public class Blackjack {
             }
 
             if (play.equalsIgnoreCase("H") || doubleDown) {
-                System.out.println("Your new card is: " + allCards.get(cardCount));
+                System.out.println("\nYour new card is: " + allCards.get(cardCount));
                 hand.add(allCards.get(cardCount));
                 total += allCards.get(cardCount).value;
 
                 total = Blackjack.checkIfAce(hand, total);
 
-                System.out.println("Your new total is: " + total);
+                System.out.println("Your new total is: " + total + "\n");
             } else if (play.equalsIgnoreCase("S")) {
                 break;
             } else {
@@ -374,6 +375,7 @@ public class Blackjack {
             System.out.println("You lose.");
             chips -= bet;
         }
+        System.out.println();
     }
 
     public static void saveScore() throws IOException {
@@ -508,8 +510,9 @@ public class Blackjack {
                 }
                 write.close();
             }
+        } else {
+            Blackjack.saveScore();
         }
-        Blackjack.saveScore();
         System.out.println("Thank you for playing!");
     }
     // end: Main method
